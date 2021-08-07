@@ -16,6 +16,7 @@ const uploadTempImage = async (req: Request, res: Response)=>{
     //console.log(req.file);
     let tmpFileData:TempImages = {
         path:req.file?.path ?? "",
+        name:req.file?.filename|| "",
         delete:false
     } 
 
@@ -24,13 +25,13 @@ const uploadTempImage = async (req: Request, res: Response)=>{
     try {
         let savedData=await tmpModel.save()
 
-        const id = savedData._id;
+        const id = savedData.name;
         
 
         return res.status(200).json({
             success:1,
             file:{
-                url:`${env.URL}/api/tmp/get/${id}`
+                url:`${env.URL}/api/v${env.API_VERSION}/tmp/get/${id}`
             },
             
         })
@@ -54,7 +55,7 @@ const getTempImage = async (req: Request, res: Response) => {
     const tempId = req.params.id
 
     try{
-        let tmpDoc =await models.TempImageModel.findById(tempId);
+        let tmpDoc =await models.TempImageModel.findOne({name:tempId});
         //console.log(tmpDoc?.toObject());
         if(tmpDoc===undefined||tmpDoc===null){
             return res.status(404).json({
@@ -91,17 +92,18 @@ const deleteTempImage = async (req: Request, res: Response)=>{
         }
 
         await tmpDoc.deleteOne();
-        console.log(tmpDoc);
+        //console.log(tmpDoc);
         
         let tmpImg:TempImages = {
             path:tmpDoc.toObject().path,
+            name:tmpDoc.toObject().name,
             delete:true
         };
         await fs.unlink(tmpDoc.path)
 
        
         
-        return res.status(200);
+        return res.status(200).json({});
     }catch(err){
         console.error(err);
         

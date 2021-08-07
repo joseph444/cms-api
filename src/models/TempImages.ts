@@ -3,6 +3,7 @@ import { TempImages } from "../utils/interfaces";
 
 const tempImagesSchema = new Schema<TempImages>({
     path:{type:SchemaTypes.String,required:true},
+    name:{type:SchemaTypes.String,required:true},
     delete:{type:SchemaTypes.Boolean,default:false}
 })
 

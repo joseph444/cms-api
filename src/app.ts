@@ -4,6 +4,7 @@ import morgan from "morgan";
 import ENV from "./utils/env"
 import routes from "./routes"
 import {connect} from "mongoose";
+import cors from "cors";
 import fs from "fs"
 const router:Express = express()
 
@@ -26,22 +27,11 @@ if(!fs.existsSync(`${process.cwd()}/tmp`)){
 
 
 router.use(morgan('dev'))
+router.use(cors());
 router.use(express.urlencoded({extended:false}))
 router.use(express.json())
 
-//console.log(ENV);
-router.use((req, res, next) => {
-    // set the CORS policy
-    res.header('Access-Control-Allow-Origin', '*');
-    // set the CORS headers
-    res.header('Access-Control-Allow-Headers', 'origin, X-Requested-With,Content-Type,Accept, Authorization');
-    // set the CORS method headers
-    if (req.method === 'OPTIONS') {
-        res.header('Access-Control-Allow-Methods', 'GET PATCH DELETE POST');
-        return res.status(200).json({});
-    }
-    next();
-});
+
 
 const API_PATH = `/api/v${ENV.API_VERSION}`
 

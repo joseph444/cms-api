@@ -1,5 +1,6 @@
 export interface TempImages {
     path:string
+    name:string
     delete:boolean
 }
 export interface Posts {
